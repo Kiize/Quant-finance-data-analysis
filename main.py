@@ -1,14 +1,11 @@
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
-from itertools import batched
-from scipy.stats import norm
-from scipy.optimize import curve_fit
+from helper import radar_chart
 
 """
-We study the log returns of the S&P 500 index from 1990 to 2025, focusing on their behavior during the market crashes of 2000, 2008, 2020.
+In this repo one can find the analysis of the log returns and of various stats for 5 tickers: S&P500, Nasdaq, Google, Tesla and Apple.
 """
 start = "2010-01-01"
 end = "2025-01-01"
@@ -33,7 +30,7 @@ for (i, tick) in enumerate(tick_list):
     #df = pd.concat([df, log_ret_pd, close_pd], axis=1)
 
 log_ret_pd.dropna(inplace=True)
-#print(log_ret_pd)
+
 #close_pd.plot(subplots=True, figsize=(10, 12))
 #plt.savefig("close.png")
 #log_ret_pd.plot(subplots=True, figsize=(10, 12))
@@ -50,32 +47,19 @@ stats_pd = pd.DataFrame(
     }
 )
 
-def radar_chart(ax, data):
-    # data is transposed
-    values = data.values
-    indices = data.index
-    N = len(indices)
-
-    values = np.append(values, values[0])
-    angles = np.arange(N + 1) / float(N) * 2 * np.pi
-
-    plt.xticks(angles[:-1], indices)
-    ax.yaxis.get_major_locator().base.set_params(nbins=3)
-    ax.plot(angles, values, linewidth=2, linestyle='solid')
-    ax.fill(angles, values, alpha=0.25)
-    plt.title(data.name)
-
-#fig, axs = plt.subplots(2, 3, projection="polar", figsize=(10, 8))
-fig = plt.figure(figsize=(15, 15))
-
-""" for i in range(1, len(tick_list) + 1):
-    ax = fig.add_subplot(2, 3, i, projection='polar')
-    radar_chart(ax, stats_pd.T[tick_list[i - 1]]) """
+""" fig = plt.figure(figsize=(15, 15))
 
 for i in range(1, len(stats_pd.columns) + 1):
     ax = fig.add_subplot(2, 2, i, projection='polar')
-    radar_chart(ax, stats_pd.iloc[:, i - 1])
+    radar_chart(ax, stats_pd.iloc[:, i - 1]) """
 
-plt.savefig("statistics.png")
+#plt.savefig("statistics.png")
 
+# Rolling volatility
+
+w = 30 # window of 30 days
+roll_vol = log_ret_pd.rolling(w).std(ddof=0) * (252**0.5) # volatility annualized
+
+roll_vol.plot(subplots=True, figsize=(10, 6))
+plt.savefig("rolling_vol.png")
 plt.show()
