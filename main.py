@@ -76,4 +76,6 @@ for i in range(1, len(stats_pd.columns) + 1):
     ax = fig.add_subplot(2, 2, i, projection='polar')
     radar_chart(ax, stats_pd.iloc[:, i - 1])
 
+plt.savefig("statistics.png")
+
 plt.show()
