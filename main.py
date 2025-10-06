@@ -5,10 +5,10 @@ import numpy as np
 from helper import radar_chart
 
 """
-In this repo one can find the analysis of the log returns and of various stats for 5 tickers: S&P500, Nasdaq, Google, Tesla and Apple.
+In this file one can find the analysis of the log returns and of various stats for 5 tickers: S&P500, Nasdaq, Google, Tesla and Apple.
 """
 start = "2010-01-01"
-end = "2025-01-01"
+end = "2025-01-10"
 
 tick_list = ["^GSPC", "^IXIC", "GOOG", "TSLA", "AAPL"]
 
@@ -50,7 +50,7 @@ stats_pd = pd.DataFrame(
 """ fig = plt.figure(figsize=(15, 15))
 
 for i in range(1, len(stats_pd.columns) + 1):
-    ax = fig.add_subplot(2, 2, i, projection='polar')
+    ax = fig.add_subplot(len(stats_pd.index), len(stats_pd.columns), i, projection='polar')
     radar_chart(ax, stats_pd.iloc[:, i - 1]) """
 
 #plt.savefig("statistics.png")
@@ -60,6 +60,19 @@ for i in range(1, len(stats_pd.columns) + 1):
 w = 30 # window of 30 days
 roll_vol = log_ret_pd.rolling(w).std(ddof=0) * (252**0.5) # volatility annualized
 
-roll_vol.plot(subplots=True, figsize=(10, 6))
-plt.savefig("rolling_vol.png")
-plt.show()
+""" roll_vol.plot(subplots=True, figsize=(10, 6))
+plt.savefig("rolling_vol.png") """
+
+# Corr matrix
+
+""" plt.matshow(log_ret_pd.corr())
+data = log_ret_pd.corr().to_numpy()
+for i in range(data.shape[0]):
+    for j in range(data.shape[1]):
+        plt.text(j, i, "{:.2f}".format(data[i,j]), ha="center", va="center")    # annotations
+
+plt.colorbar()  # legend
+plt.xticks(range(len(log_ret_pd.columns)), log_ret_pd.columns, rotation=45) # x axis ticks
+plt.yticks(range(len(log_ret_pd.columns)), log_ret_pd.columns)  # y axis ticks
+plt.savefig("correlation_matrix.png") """
+#plt.show()
